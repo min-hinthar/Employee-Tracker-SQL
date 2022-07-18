@@ -17,12 +17,12 @@ VALUES ('Sales Lead', 100000, 1),
 ('Lawyer', 190000, 4);
 
 -- employees table with values firstN, lastN, roleID
-INSERT INTO employees (first_name, last_name, role_id)
-VALUES ('Su', 'Yi', 1),
-('Min', 'Kant', 1),
-('Steve', 'Hops', 2),
-('Edward', 'Winters', 2),
-('Kevin', 'Singh', 3),
-('Tam', 'Sawyer', 3),
-('Abbie', 'Lincoln', 4),
-('Johnny', 'Shallows', 4);
+INSERT INTO employees (first_name, last_name, role_id, manager_id)
+VALUES ('Su', 'Yi', 1, null),
+('Min', 'Kant', 1, 1),
+('Steve', 'Hops', 2, null),
+('Edward', 'Winters', 2, 3),
+('Kevin', 'Singh', 3, null),
+('Tam', 'Sawyer', 3, 5),
+('Abbie', 'Lincoln', 4, null),
+('Johnny', 'Shallows', 4, 6);
