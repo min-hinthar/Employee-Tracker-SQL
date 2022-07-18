@@ -18,5 +18,11 @@ VALUES ('Sales Lead', 100000, 1),
 
 -- employees table with values firstN, lastN, roleID
 INSERT INTO employees (first_name, last_name, role_id)
-VALUES ('Su', 'Chan', 1)
-('Su', 'Chan', 1)
+VALUES ('Su', 'Yi', 1),
+('Min', 'Kant', 1),
+('Steve', 'Hops', 2),
+('Edward', 'Winters', 2),
+('Kevin', 'Singh', 3),
+('Tam', 'Sawyer', 3),
+('Abbie', 'Lincoln', 4),
+('Johnny', 'Shallows', 4);
