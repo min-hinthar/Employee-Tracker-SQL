@@ -34,6 +34,7 @@ let choicesList = [
     name: 'choice',
     choices: [
                 'View All Employee',
+                'Add Employee',
                 'Update Employee Role',
                 'View All Roles',
                 'Add Role',
@@ -51,6 +52,8 @@ function trackerPrompt () {
             switch (data.choice){
                 case 'View All Employee':
                     viewAllEmployee();
+                case 'Add Employee':
+                    addEmployee();
                 break;
                 case 'Update Employee Role':
                     updateEmployeeRole();
@@ -72,7 +75,7 @@ function trackerPrompt () {
                 break;
             }
         })
-}
+};
 
 
 
