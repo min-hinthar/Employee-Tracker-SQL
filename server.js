@@ -47,11 +47,29 @@ let choicesList = [
 function trackerPrompt () {
     inquirer.prompt(choicesList)
         .then(function(data){
+            // use switch case break on choice data
             switch (data.choice){
                 case 'View All Employee':
                     viewAllEmployee();
                 break;
-                
+                case 'Update Employee Role':
+                    updateEmployeeRole();
+                break;
+                case 'View All Roles':
+                    viewAllRole();
+                break;
+                case 'Add Role':
+                    addRole();
+                break;
+                case 'View All Departments':
+                    viewAllDepartment();
+                break;
+                case 'Add Departments':
+                    addDepartment();
+                break;
+                case 'Quit':
+                    quitPrompt();
+                break;
             }
         })
 }
