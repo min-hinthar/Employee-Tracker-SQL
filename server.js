@@ -26,6 +26,38 @@ let sequelize = new Sequelize(
     }
 );
 
+// create options list of choices for prompt
+let choicesList = [
+{
+    type: 'list',
+    message: 'Please select your options to proceed',
+    name: 'choice',
+    choices: [
+                'View All Employee',
+                'Update Employee Role',
+                'View All Roles',
+                'Add Role',
+                'View All Departments',
+                'Add Departments',
+                'Quit'
+    ]
+}];
+
+// use inquirer prompt to begin list of choice prompt
+function trackerPrompt () {
+    inquirer.prompt(choicesList)
+        .then(function(data){
+            switch (data.choice){
+                case 'View All Employee':
+                    viewAllEmployee();
+                break;
+                
+            }
+        })
+}
+
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
