@@ -17,6 +17,7 @@ require('dotenv').config();
 
 // use .env variables to connect to database
 let sequelize = new Sequelize(
+    process.env.DB_NAME,
     process.env.DB_USERNAME,
     process.env.DB_PASSWORD,
     {
@@ -77,7 +78,11 @@ function trackerPrompt () {
         })
 };
 
-
+// console.table to view all employess
+function viewAllEmployee() {
+    sequelize.query(
+        'SELECT employees.first_name AS First_Name, employees.last_name AS Last_Name, roles.title AS Title, departments.department_name AS Department, CONCAT(manager.first_name, manager.last_name) AS Manager FROM employees LEFT JOIN employees manager on manager_id = employees.manager_id INNER JOIN roles ON (role_id = employees.role_id) INNER JOIN department ON (department_id = roles.department_id) ORDER BY employees.employee_id;')
+}
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
