@@ -80,8 +80,17 @@ function trackerPrompt () {
 
 // console.table to view all employess
 function viewAllEmployee() {
-    sequelize.query(
-        'SELECT employees.first_name AS First_Name, employees.last_name AS Last_Name, roles.title AS Title, departments.department_name AS Department, CONCAT(manager.first_name, manager.last_name) AS Manager FROM employees LEFT JOIN employees manager on manageNER JOIN roles ON (role_id = employees.role_id) INNER JOIN department ON (department_id = roles.department_id) ORDER BY employees.employee_id;').spread(function(err, res) {
+    let query = 
+    `SELECT employees.first_name AS First_Name, 
+    employees.last_name AS Last_Name, 
+    roles.title AS Title, 
+    departments.department_name AS Department, 
+    CONCAT(manager.first_name, manager.last_name) AS Manager FROM employees 
+    LEFT JOIN employees manager on manageNER JOIN roles ON (role_id = employees.role_id) 
+    INNER JOIN department ON (department_id = roles.department_id) 
+    ORDER BY employees.employee_id;`
+
+    sequelize.query(query, function(err, res) {
             if (err) throw (err);
             // view all employees from table
             console.table(res);
