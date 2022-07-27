@@ -191,8 +191,9 @@ function addDepartment() {
         });
 };
 
-// console.table to ADD Department
+// exit prompt
 function quitPrompt() {
+    console.log("Exiting prompt...");
     sequelize.close;
 };
 
