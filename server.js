@@ -12,6 +12,7 @@ const consoleTb = require('console.table');
 const inquirer = require('inquirer');
 // require access to sequelize
 const Sequelize = require('sequelize');
+const Connection = require('mysql2/typings/mysql/lib/Connection');
 // require .env variables
 require('dotenv').config();
 
@@ -78,7 +79,7 @@ function trackerPrompt () {
         })
 };
 
-// console.table to VIEW all employess
+// console.table to VIEW ALL EMPLOYEES
 function viewAllEmployee() {
     let query = 
     `SELECT employees.first_name AS First_Name, 
@@ -100,7 +101,7 @@ function viewAllEmployee() {
         });
 };
 
-// console.table to ADD employess
+// console.table to ADD EMPLOYEE
 function addEmployee() {
     let query = 
     `SELECT `
@@ -109,20 +110,20 @@ function addEmployee() {
             if (err) throw (err);
             // view all employees from table
             console.table(res);
-            console.log("Employee Added...");
+            console.log("New Employee Added...");
             // return to main prompt
             trackerPrompt();
         });
 };
 
-// console.table to ADD employess
+// console.table to UPDATE EMPLOYEE ROLE
 function updateEmployeeRole() {
     let query = 
     `SELECT `
 
     sequelize.query(query, function(err, res) {
             if (err) throw (err);
-            // view all employees from table
+            // view all employee ROLE from table
             console.table(res);
             console.log("Employee Role Updated...");
             // return to main prompt
@@ -130,7 +131,7 @@ function updateEmployeeRole() {
         });
 };
 
-// console.table to ADD employess
+// console.table to VIEW EMPLOYEE ROLE
 function viewAllRole() {
     let query = 
     `SELECT `
@@ -144,6 +145,57 @@ function viewAllRole() {
             trackerPrompt();
         });
 };
+
+// console.table to ADD EMPLOYEE ROLE
+function addRole() {
+    let query = 
+    `SELECT `
+
+    sequelize.query(query, function(err, res) {
+            if (err) throw (err);
+            // view all employee ROLE from table
+            console.table(res);
+            console.log("Employee Role Added...");
+            // return to main prompt
+            trackerPrompt();
+        });
+};
+
+// console.table to VIEW ALL Department
+function viewAllDepartment() {
+    let query = 
+    `SELECT `
+
+    sequelize.query(query, function(err, res) {
+            if (err) throw (err);
+            // view all DEPARTMENT from table
+            console.table(res);
+            console.log("Viewing All Departments...");
+            // return to main prompt
+            trackerPrompt();
+        });
+};
+
+// console.table to ADD Department
+function addDepartment() {
+    let query = 
+    `SELECT `
+
+    sequelize.query(query, function(err, res) {
+            if (err) throw (err);
+            // view all DEPARTMENT from table
+            console.table(res);
+            console.log("New Department Added...");
+            // return to main prompt
+            trackerPrompt();
+        });
+};
+
+// console.table to ADD Department
+function quitPrompt() {
+    sequelize.close;
+};
+
 
 
 
