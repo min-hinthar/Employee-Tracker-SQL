@@ -78,7 +78,7 @@ function trackerPrompt () {
         })
 };
 
-// console.table to view all employess
+// console.table to VIEW all employess
 function viewAllEmployee() {
     let query = 
     `SELECT employees.first_name AS First_Name, 
@@ -99,6 +99,52 @@ function viewAllEmployee() {
             trackerPrompt();
         });
 };
+
+// console.table to ADD employess
+function addEmployee() {
+    let query = 
+    `SELECT `
+
+    sequelize.query(query, function(err, res) {
+            if (err) throw (err);
+            // view all employees from table
+            console.table(res);
+            console.log("Employee Added...");
+            // return to main prompt
+            trackerPrompt();
+        });
+};
+
+// console.table to ADD employess
+function updateEmployeeRole() {
+    let query = 
+    `SELECT `
+
+    sequelize.query(query, function(err, res) {
+            if (err) throw (err);
+            // view all employees from table
+            console.table(res);
+            console.log("Employee Role Updated...");
+            // return to main prompt
+            trackerPrompt();
+        });
+};
+
+// console.table to ADD employess
+function viewAllRole() {
+    let query = 
+    `SELECT `
+
+    sequelize.query(query, function(err, res) {
+            if (err) throw (err);
+            // view all employees from table
+            console.table(res);
+            console.log("Viewing All Roles...");
+            // return to main prompt
+            trackerPrompt();
+        });
+};
+
 
 
 app.use(express.json());
