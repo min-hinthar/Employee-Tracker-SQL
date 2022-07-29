@@ -104,10 +104,35 @@ function viewAllEmployee() {
 // console.table to ADD EMPLOYEE
 function addEmployee() {
     let query = 
-    `SELECT `
-
+    `SELECT * FROM role;`
+    let employeePrompt = [
+        {
+            name: 'firstName',
+            type: 'input',
+            message: 'What is the First Name of new employee?'
+        },
+        {
+            name: 'lastName',
+            type: 'input',
+            message: 'What is the Last Name of new employee?'
+        },
+        {
+            name: 'role',
+            type: 'rawlist',
+            message: 'What is the Role of new employee?',
+            choices: roles
+        },
+        {
+            name: 'manager',
+            type: 'rawlist',
+            message: 'What is the Manager of new employee?',
+            choices: employees
+        },
+    ]
+    
     sequelize.query(query, function(err, res) {
             if (err) throw (err);
+
             // view all employees from table
             console.table(res);
             console.log("New Employee Added...");
