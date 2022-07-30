@@ -172,10 +172,10 @@ function addEmployee() {
 
 // console.table to UPDATE EMPLOYEE ROLE
 function updateEmployeeRole() {
-    let query = 
-    `SELECT `
-
-    sequelize.query(query, function(err, res) {
+    let queryRoles = 
+    `SELECT * FROM roles;`
+    let roles = res.map(role => ({name: role.title, value: role.role_id}));
+    sequelize.query(queryRoles, function(err, res) {
             if (err) throw (err);
             // view all employee ROLE from table
             console.table(res);
