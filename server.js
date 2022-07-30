@@ -103,8 +103,8 @@ function viewAllEmployee() {
 
 // console.table to ADD EMPLOYEE
 function addEmployee() {
-    let query = 
-    `SELECT * FROM role;`
+    let queryRoles = 
+    `SELECT * FROM roles;`
     let employeePrompt = [
         {
             name: 'firstName',
@@ -130,14 +130,43 @@ function addEmployee() {
         },
     ]
     
-    sequelize.query(query, function(err, res) {
+    sequelize.query(queryRoles, function(err, res) {
             if (err) throw (err);
-
-            // view all employees from table
-            console.table(res);
-            console.log("New Employee Added...");
-            // return to main prompt
-            trackerPrompt();
+            // loop through roles array for role title and role id
+            let roles = res.map(role => ({name: role.title, value: role.role_id}));
+            let queryEmp = 
+            `SELECT * FROM employees;`
+            sequelize.query(queryEmp, (err, res) => {
+                    if (err) throw (err);
+                    // loop through employees array
+                    let employees = res.map(employees => ({name: employees.first_name + '' + employees.last_name, value: employees.employee_id})); 
+                        inquirer.prompt(employeePrompt)
+                        .then((res) => {
+                            sequelize.query(`INSERT INTO employees SET ?`,
+                            {
+                                first_name: res.firstName,
+                                last_name: res.lastName,
+                                role_id: res.roles,
+                                manager_id: res.manager,
+                            },
+                            (err, res) => {
+                                if (err) throw (err);
+                            })
+                            sequelize.query(`INSERT INTO SET ?`,
+                            {
+                                department_id: res.departments,
+                            },
+                            (err, res) => {
+                                if(err) throw (err);
+                                // view all employees from table
+                                console.table(res);
+                                console.log("New Employee Added...");
+                                // return to main prompt
+                                trackerPrompt();
+                                
+                            });
+                        });
+                });
         });
 };
 
