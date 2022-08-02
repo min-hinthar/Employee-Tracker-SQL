@@ -204,17 +204,57 @@ function viewAllRole() {
 
 // console.table to ADD EMPLOYEE ROLE
 function addRole() {
-    let query = 
-    `SELECT `
+    // declare rolePrompt questions
+    let rolePrompt = [
+        {
+            type: 'input',
+            name: 'role',
+            message: 'Do you want to add a new Role?',
+            // Validate input
+            validate: addRole => {
+                if (addRole) {
+                    return true;
+                } else {
+                    console.log('Please add a valid Role');
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'What is the Salary of this new role?',
+            // Validate ifNAN return false
+            validate: addSalary => {
+                if (isNaN(addSalary)) {
+                    return true;
+                } else {
+                    console.log('Please enter a Number value');
+                    return false;
+                }
+            }
+        }
+    ];
 
-    sequelize.query(query, function(err, res) {
-            if (err) throw (err);
-            // view all employee ROLE from table
-            console.table(res);
-            console.log("Employee Role Added...");
-            // return to main prompt
-            trackerPrompt();
-        });
+    inquirer.prompt(rolePrompt)
+    .then(res => {
+        let params = [res.role, res.salary];
+        let roleSelect = 
+        `SELECT department_name, department_id FROM departments`;
+        
+        sequelize.query(roleSelect, function(err, res) {
+                if (err) throw (err);
+                let deptData = data.map(({ department_name, department_id}) => ({name: department_name, vlue: department_id}));
+                let deptPrompt = 
+                // view all employee ROLE from table
+                console.table(res);
+                console.log("Employee Role Added...");
+                // return to main prompt
+                trackerPrompt();
+            });
+
+    })
+
 };
 
 // console.table to VIEW ALL Department
