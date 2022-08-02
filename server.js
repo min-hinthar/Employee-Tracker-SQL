@@ -188,7 +188,9 @@ function updateEmployeeRole() {
 // console.table to VIEW EMPLOYEE ROLE
 function viewAllRole() {
     let query = 
-    `SELECT `
+    `SELECT roles.role_id, roles.title, departments.department_name AS Department
+    FROM roles
+    INNER JOIN Department ON roles.department_id = departments.department_id`
 
     sequelize.query(query, function(err, res) {
             if (err) throw (err);
