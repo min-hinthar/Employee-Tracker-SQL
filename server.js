@@ -235,7 +235,7 @@ function addRole() {
             }
         }
     ];
-
+    // use inquirer for rolePrompt questions
     inquirer.prompt(rolePrompt)
     .then(res => {
         let params = [res.role, res.salary];
@@ -244,17 +244,36 @@ function addRole() {
         
         sequelize.query(roleSelect, function(err, res) {
                 if (err) throw (err);
-                let deptData = data.map(({ department_name, department_id}) => ({name: department_name, vlue: department_id}));
-                let deptPrompt = 
-                // view all employee ROLE from table
-                console.table(res);
-                console.log("Employee Role Added...");
-                // return to main prompt
-                trackerPrompt();
+                let deptData = data.map(({department_name, department_id}) => ({name: department_name, vlue: department_id}));
+                let deptPrompt = [
+                    {
+                        type: 'list',
+                        name: 'deptData',
+                        message: 'What Department is this new Role added?',
+                        choice: deptData
+                    }
+                ];
+
+                inquirer.prompt(deptPrompt)
+                .then(res => {
+                    let deptData = res.deptData;
+                    params.push(deptData);
+                    
+                    let roleSql = 
+                    `INSERT INTO roles (title, salary, department_id)
+                    VALUE (?, ?, ?)`;
+
+                    // view all employee ROLE from table
+                    sequelize.query(roleSql, params, (err, res) => {
+                        if (err) throw (err);
+                        console.table(res);
+                        console.log("Employee Role Added..." + res.role);
+                        // return to main prompt
+                        trackerPrompt();
+                    })
+                })
             });
-
     })
-
 };
 
 // console.table to VIEW ALL Department
