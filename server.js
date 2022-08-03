@@ -133,7 +133,7 @@ function addEmployee() {
     sequelize.query(queryRoles, function(err, res) {
             if (err) throw (err);
             // loop through roles array for role title and role id
-            let roles = res.map(role => ({name: role.title, value: role.role_id}));
+            let roles = res.map(roles => ({name: roles.title, value: roles.role_id}));
             let queryEmp = 
             `SELECT * FROM employees;`
             sequelize.query(queryEmp, (err, res) => {
@@ -332,9 +332,6 @@ function quitPrompt() {
     console.log("Exiting prompt...");
     sequelize.close;
 };
-
-
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
