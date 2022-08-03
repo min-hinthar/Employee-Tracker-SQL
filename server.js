@@ -272,14 +272,14 @@ function addRole() {
                         trackerPrompt();
                     })
                 })
-            });
-    })
+            })
+    });
 };
 
 // console.table to VIEW ALL Department
 function viewAllDepartment() {
     let query = 
-    `SELECT `
+    `SELECT departments.department_id AS ID, departments.department_name AS departments`;
 
     sequelize.query(query, function(err, res) {
             if (err) throw (err);
@@ -293,17 +293,38 @@ function viewAllDepartment() {
 
 // console.table to ADD Department
 function addDepartment() {
-    let query = 
-    `SELECT `
-
-    sequelize.query(query, function(err, res) {
+    // declare newDeptPrompt
+    let newDeptPrompt = [
+        {
+            type: 'input',
+            name: 'addDept',
+            message: 'What new Department would you like to add?',
+            validate: addDept => {
+                if (addDept) {
+                    return true;
+                } else {
+                    console.log('Please input valid department name!');
+                    return false;
+                }
+            }
+        }
+    ];
+    
+    inquirer.prompt(newDeptPrompt)
+    .then(res => {
+        let query = 
+        `INSERT INTO departments (department_name)
+        VALUES (?)`;
+        sequelize.query(query, res.addDept, function(err, res) {
             if (err) throw (err);
             // view all DEPARTMENT from table
             console.table(res);
-            console.log("New Department Added...");
+            console.log("New Department Added..." + res.addDept);
             // return to main prompt
             trackerPrompt();
         });
+
+    })
 };
 
 // exit prompt
