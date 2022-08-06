@@ -56,6 +56,9 @@ function trackerPrompt () {
                 case 'Add Employee':
                     addEmployee();
                 break;
+                case 'Remove Employee':
+                    removeEmployee();
+                break;
                 case 'Update Employee Role':
                     updateEmployeeRole();
                 break;
@@ -168,6 +171,37 @@ function addEmployee() {
                 });
         });
 };
+
+// option to delete employee from database
+function removeEmployee () {
+    let queryEmp = 
+    `SELECT * FROM employees`;
+    sequelize.query(queryEmp, function(err, res) {
+        if (err) throw (err);
+        let employeeArray = data.map(({ id, first_name, last_name, }) => ({ name: first_name + " " + last_name, value: id}));
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'name',
+                message: 'Please select employee to be removed from database',
+                choices: employeeArray
+            }
+        ])
+        .then(employeeRemoved => {
+            let removedEmp = employeeRemoved.name;
+            let query =
+            `DELETE FROM employees WHERE id = ?`;
+            sequelize.query(query, removedEmp, (err, res) => {
+                if (err) throw (err);
+                console.table(res);
+                console.log('Employee removed from database successfully');
+                // return to main prompt
+                trackerPrompt();
+            })
+        })
+    })
+};
+
 
 // console.table to UPDATE EMPLOYEE ROLE
 function updateEmployeeRole() {
