@@ -1,32 +1,24 @@
-// require express
-const express = require('express');
-// use app as express 
-const app = express();
-// declare PORT env
-const PORT = process.env.PORT || 3001;
 // require mysql
 const mysql = require('mysql2');
 // require console.table
 const consoleTb = require('console.table'); 
 // require inquirer
 const inquirer = require('inquirer');
-// require access to sequelize
-const Sequelize = require('sequelize');
-const Connection = require('mysql2/typings/mysql/lib/Connection');
-// require .env variables
-require('dotenv').config();
+
 
 // use .env variables to connect to database
-let sequelize = new Sequelize(
-    'process.env.DB_NAME',
-    'process.env.DB_USERNAME',
-    'process.env.DB_PASSWORD',
+const db = mysql.createConnection(
     {
-        host: 'localhost',
-        dialect: 'mysql',
-        port: 3001
-    }
-);
+      host: 'localhost',
+      // MySQL username,
+      user: 'root',
+      password: '@UCLAroot',
+      database: 'employee_DB'
+    },
+    console.log(`Connected to the employee_DB.`)
+  );
+
+trackerPrompt();
 
 // use inquirer prompt to begin list of choice prompt
 function trackerPrompt () {
@@ -47,9 +39,12 @@ function trackerPrompt () {
                     'Quit'
         ]
     }];
+    console.log("hererrererererere");
     inquirer.prompt(choicesList)
         .then(function(data){
+            
             // use switch case break on choice data
+            console.log(data.choice)
             switch (data.choice){
                 case 'View All Employee':
                     viewAllEmployee();
@@ -88,12 +83,12 @@ function viewAllEmployee() {
     employees.last_name AS Last_Name, 
     roles.title AS Title, 
     departments.department_name AS Department, 
-    CONCAT(manager.first_name, manager.last_name) AS Manager FROM employees 
-    LEFT JOIN employees manager on manageNER JOIN roles ON (role_id = employees.role_id) 
-    INNER JOIN department ON (department_id = roles.department_id) 
+    CONCAT(employees.first_name, employees.last_name) AS Manager FROM employees 
+    LEFT JOIN roles ON (roles.role_id = employees.role_id) 
+    INNER JOIN departments ON (departments.department_id = roles.department_id) 
     ORDER BY employees.employee_id;`
 
-    sequelize.query(query, function(err, res) {
+    db.query(query, function(err, res) {
             if (err) throw (err);
             // view all employees from table
             console.table(res);
@@ -107,44 +102,44 @@ function viewAllEmployee() {
 function addEmployee() {
     let queryRoles = 
     `SELECT * FROM roles;`
-    let employeePrompt = [
+    db.query(queryRoles, function(err, res) {
+        if (err) throw (err);
+        // loop through roles array for role title and role id
+        let roles = res.map(roles => ({name: roles.title, value: roles.role_id}));
+        let employeePrompt = [
         {
-            name: 'firstName',
-            type: 'input',
-            message: 'What is the First Name of new employee?'
-        },
-        {
-            name: 'lastName',
-            type: 'input',
-            message: 'What is the Last Name of new employee?'
-        },
-        {
-            name: 'role',
-            type: 'rawlist',
-            message: 'What is the Role of new employee?',
-            choices: roles
-        },
-        {
-            name: 'manager',
-            type: 'rawlist',
-            message: 'What is the Manager of new employee?',
-            choices: employees
-        },
-    ]
-    
-    sequelize.query(queryRoles, function(err, res) {
-            if (err) throw (err);
-            // loop through roles array for role title and role id
-            let roles = res.map(roles => ({name: roles.title, value: roles.role_id}));
-            let queryEmp = 
+                name: 'firstName',
+                type: 'input',
+                message: 'What is the First Name of new employee?'
+            },
+            {
+                name: 'lastName',
+                type: 'input',
+                message: 'What is the Last Name of new employee?'
+            },
+            {
+                name: 'role',
+                type: 'rawlist',
+                message: 'What is the Role of new employee?',
+                choices: roles
+            },
+            {
+                name: 'manager',
+                type: 'rawlist',
+                message: 'What is the Manager of new employee?',
+                choices: employees
+            },
+        ]
+        
+        let queryEmp = 
             `SELECT * FROM employees;`
-            sequelize.query(queryEmp, (err, res) => {
+            db.query(queryEmp, (err, res) => {
                     if (err) throw (err);
                     // loop through employees array
                     let employees = res.map(employees => ({name: employees.first_name + '' + employees.last_name, value: employees.employee_id})); 
                         inquirer.prompt(employeePrompt)
                         .then((res) => {
-                            sequelize.query(`INSERT INTO employees SET ?`,
+                            db.query(`INSERT INTO employees SET ?`,
                             {
                                 first_name: res.firstName,
                                 last_name: res.lastName,
@@ -154,7 +149,7 @@ function addEmployee() {
                             (err, res) => {
                                 if (err) throw (err);
                             })
-                            sequelize.query(`INSERT INTO SET ?`,
+                            db.query(`INSERT INTO SET ?`,
                             {
                                 department_id: res.departments,
                             },
@@ -176,7 +171,7 @@ function addEmployee() {
 function removeEmployee () {
     let queryEmp = 
     `SELECT * FROM employees`;
-    sequelize.query(queryEmp, function(err, res) {
+    db.query(queryEmp, function(err, res) {
         if (err) throw (err);
         let employeeArray = res.map(({ id, first_name, last_name, }) => ({ name: first_name + " " + last_name, value: id}));
         inquirer.prompt([
@@ -191,7 +186,7 @@ function removeEmployee () {
             let removedEmp = employeeRemoved.name;
             let query =
             `DELETE FROM employees WHERE id = ?`;
-            sequelize.query(query, removedEmp, (err, res) => {
+            db.query(query, removedEmp, (err, res) => {
                 if (err) throw (err);
                 console.table(res);
                 console.log('Employee removed from database successfully');
@@ -206,7 +201,7 @@ function removeEmployee () {
 function updateEmployeeRole() {
     let queryEmp = 
     `SELECT * FROM employees`;
-    sequelize.query(queryEmp, function(err, res)  {
+    db.query(queryEmp, function(err, res)  {
         if (err) throw (err);
         let employeeArray = res.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
         inquirer.prompt([
@@ -223,7 +218,7 @@ function updateEmployeeRole() {
             params.push(updatedEmp);
             const query = 
             `SELECT * FROM roles`;
-            sequelize.query(query, function(err, res) {
+            db.query(query, function(err, res) {
                 if (err) throw (err);
                 let rolesArray = res.map(({ id, title }) => ({ name: title, value: id }));
                 inquirer.prompt([
@@ -243,7 +238,7 @@ function updateEmployeeRole() {
 
                     let query = 
                     `UPDATE employees SET role_id = ? WHERE id = ?`;
-                    sequelize.query(query, params, function(err, res) {
+                    db.query(query, params, function(err, res) {
                         if (err) throw (err);
                         console.table(res);
                         console.log('Role of employee updated successfully');
@@ -263,7 +258,7 @@ function viewAllRole() {
     FROM roles
     INNER JOIN Department ON roles.department_id = departments.department_id`
 
-    sequelize.query(query, function(err, res) {
+    db.query(query, function(err, res) {
             if (err) throw (err);
             // view all employees from table
             console.table(res);
@@ -313,7 +308,7 @@ function addRole() {
         let roleSelect = 
         `SELECT department_name, department_id FROM departments`;
         
-        sequelize.query(roleSelect, function(err, res) {
+        db.query(roleSelect, function(err, res) {
                 if (err) throw (err);
                 let deptData = data.map(({department_name, department_id}) => ({name: department_name, vlue: department_id}));
                 let deptPrompt = [
@@ -335,7 +330,7 @@ function addRole() {
                     VALUE (?, ?, ?)`;
 
                     // view all employee ROLE from table
-                    sequelize.query(roleSql, params, (err, res) => {
+                    db.query(roleSql, params, (err, res) => {
                         if (err) throw (err);
                         console.table(res);
                         console.log("Employee Role Added..." + res.role);
@@ -352,7 +347,7 @@ function viewAllDepartment() {
     let query = 
     `SELECT departments.department_id AS ID, departments.department_name AS departments`;
 
-    sequelize.query(query, function(err, res) {
+    db.query(query, function(err, res) {
             if (err) throw (err);
             // view all DEPARTMENT from table
             console.table(res);
@@ -386,7 +381,7 @@ function addDepartment() {
         let query = 
         `INSERT INTO departments (department_name)
         VALUES (?)`;
-        sequelize.query(query, res.addDept, function(err, res) {
+        db.query(query, res.addDept, function(err, res) {
             if (err) throw (err);
             // view all DEPARTMENT from table
             console.table(res);
@@ -400,12 +395,5 @@ function addDepartment() {
 // exit prompt
 function quitPrompt() {
     console.log("Exiting prompt...");
-    sequelize.close;
+    db.close;
 };
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-sequelize.sync().then(() => {
-    app.listen(PORT, () => console.log('APP is now listeneing at',{PORT}));
-});

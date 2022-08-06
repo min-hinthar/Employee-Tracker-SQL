@@ -3,10 +3,10 @@ USE employee_DB;
 
 -- departments table values Sales, Engineering, Finance, Legal
 INSERT INTO departments (department_name)
-VALUES ('Sales', 'Engineering', 'Finance', 'Legal');
+VALUES ('Sales'), ('Engineering'), ('Finance'), ('Legal');
 
 -- roles table values Title, Salary, DepartmentID
-INSERT INTO roles (role_title, salary, department_id)
+INSERT INTO roles (title, salary, department_id)
 VALUES ('Sales Lead', 100000, 1),
 ('Salesperson', 80000, 1), 
 ('Lead Engineer', 150000, 2), 
