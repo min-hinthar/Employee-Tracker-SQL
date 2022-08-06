@@ -178,7 +178,7 @@ function removeEmployee () {
     `SELECT * FROM employees`;
     sequelize.query(queryEmp, function(err, res) {
         if (err) throw (err);
-        let employeeArray = data.map(({ id, first_name, last_name, }) => ({ name: first_name + " " + last_name, value: id}));
+        let employeeArray = res.map(({ id, first_name, last_name, }) => ({ name: first_name + " " + last_name, value: id}));
         inquirer.prompt([
             {
                 type: 'list',
@@ -202,20 +202,58 @@ function removeEmployee () {
     })
 };
 
-
 // console.table to UPDATE EMPLOYEE ROLE
 function updateEmployeeRole() {
-    let queryRoles = 
-    `SELECT * FROM roles;`
-    let roles = res.map(role => ({name: role.title, value: role.role_id}));
-    sequelize.query(queryRoles, function(err, res) {
-            if (err) throw (err);
-            // view all employee ROLE from table
-            console.table(res);
-            console.log("Employee Role Updated...");
-            // return to main prompt
-            trackerPrompt();
-        });
+    let queryEmp = 
+    `SELECT * FROM employees`;
+    sequelize.query(queryEmp, function(err, res)  {
+        if (err) throw (err);
+        let employeeArray = res.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
+        inquirer.prompt([
+            {
+            type: 'list',
+            name: 'name',
+            message: 'Please select employee to update role?',
+            choices: employeeArray
+            }
+        ])
+        .then(updEmp => {
+            let updatedEmp = updEmp.name;
+            let params = [];
+            params.push(updatedEmp);
+            const query = 
+            `SELECT * FROM roles`;
+            sequelize.query(query, function(err, res) {
+                if (err) throw (err);
+                let rolesArray = res.map(({ id, title }) => ({ name: title, value: id }));
+                inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'role',
+                        message: 'What is the new role for the employee?',
+                        choices: rolesArray
+                    }
+                ])
+                .then(roleEmp => {
+                    let newRole = roleEmp.role;
+                    params.push(newRole);
+                    let employee = params[0]
+                    params[0] = newRole
+                    params[1] = employee
+
+                    let query = 
+                    `UPDATE employees SET role_id = ? WHERE id = ?`;
+                    sequelize.query(query, params, function(err, res) {
+                        if (err) throw (err);
+                        console.table(res);
+                        console.log('Role of employee updated successfully');
+                        // return to main prompt
+                        trackerPrompt();
+                    })
+                })
+            })
+        })
+    })
 };
 
 // console.table to VIEW EMPLOYEE ROLE
@@ -356,7 +394,6 @@ function addDepartment() {
             // return to main prompt
             trackerPrompt();
         });
-
     })
 };
 
