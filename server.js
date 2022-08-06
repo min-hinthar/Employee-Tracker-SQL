@@ -28,26 +28,25 @@ let sequelize = new Sequelize(
     }
 );
 
-// create options list of choices for prompt
-let choicesList = [
-{
-    type: 'list',
-    message: 'Please select your options to proceed',
-    name: 'choice',
-    choices: [
-                'View All Employee',
-                'Add Employee',
-                'Update Employee Role',
-                'View All Roles',
-                'Add Role',
-                'View All Departments',
-                'Add Departments',
-                'Quit'
-    ]
-}];
-
 // use inquirer prompt to begin list of choice prompt
 function trackerPrompt () {
+    // create options list of choices for prompt
+    let choicesList = [
+    {
+        type: 'list',
+        message: 'Please select your options to proceed',
+        name: 'choice',
+        choices: [
+                    'View All Employee',
+                    'Add Employee',
+                    'Update Employee Role',
+                    'View All Roles',
+                    'Add Role',
+                    'View All Departments',
+                    'Add Departments',
+                    'Quit'
+        ]
+    }];
     inquirer.prompt(choicesList)
         .then(function(data){
             // use switch case break on choice data
