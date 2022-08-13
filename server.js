@@ -107,6 +107,8 @@ function addEmployee() {
         if (err) throw (err);
         // loop through roles array for role title and role id
         let roles = res.map(roles => ({name: roles.title, value: roles.role_id}));
+        let employeesList = res.map(employees => ({name: employees.first_name + '' + employees.last_name, value: employees.employee_id})); 
+        
         let employeePrompt = [
         {
                 name: 'firstName',
@@ -127,8 +129,8 @@ function addEmployee() {
             {
                 name: 'manager',
                 type: 'rawlist',
-                message: 'What is the Manager of new employee?',
-                choices: employees
+                message: 'Who is the Manager of new employee?',
+                choices: employeesList
             },
         ]
         
@@ -137,7 +139,6 @@ function addEmployee() {
             db.query(queryEmp, (err, res) => {
                     if (err) throw (err);
                     // loop through employees array
-                    let employees = res.map(employees => ({name: employees.first_name + '' + employees.last_name, value: employees.employee_id})); 
                         inquirer.prompt(employeePrompt)
                         .then((res) => {
                             db.query(`INSERT INTO employees SET ?`,
@@ -311,7 +312,7 @@ function addRole() {
         
         db.query(roleSelect, function(err, res) {
                 if (err) throw (err);
-                let deptData = data.map(({department_name, department_id}) => ({name: department_name, vlue: department_id}));
+                let deptData = data.map(({department_name, department_id}) => ({name: department_name, value: department_id}));
                 let deptPrompt = [
                     {
                         type: 'list',

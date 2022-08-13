@@ -16,13 +16,13 @@ VALUES ('Sales Lead', 100000, 1),
 ('Legal Team Lead', 250000, 4), 
 ('Lawyer', 190000, 4);
 
--- employees table with values firstN, lastN, roleID
+-- employees table with values firstN, lastN, roleID, managerID
 INSERT INTO employees (first_name, last_name, role_id, manager_id)
 VALUES ('Su', 'Yi', 1, null),
-('Min', 'Kant', 1, 1),
-('Steve', 'Hops', 2, null),
-('Edward', 'Winters', 2, 3),
-('Kevin', 'Singh', 3, null),
-('Tam', 'Sawyer', 3, 5),
-('Abbie', 'Lincoln', 4, null),
-('Johnny', 'Shallows', 4, 6);
+('Min', 'Kant', 2, 1),
+('Steve', 'Hops', 3, null),
+('Edward', 'Winters', 4, 3),
+('Kevin', 'Singh', 5, null),
+('Tam', 'Sawyer', 6, 5),
+('Abbie', 'Lincoln', 7, null),
+('Johnny', 'Shallows', 8, 6);

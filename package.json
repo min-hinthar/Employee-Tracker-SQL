@@ -4,5 +4,27 @@
     "console.table": "^0.10.0",
     "inquirer": "^8.2.4",
     "mysql2": "^2.3.3"
-  }
+  },
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seeds.js"
+  },
+  "name": "employee-tracker-sql",
+  "description": "-----",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/min-hinthar/Employee-Tracker-SQL.git"
+  },
+  "keywords": [
+    "employee-tracker-mysql2-node-consoleTable"
+  ],
+  "author": "Min",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/min-hinthar/Employee-Tracker-SQL/issues"
+  },
+  "homepage": "https://github.com/min-hinthar/Employee-Tracker-SQL#readme"
 }
