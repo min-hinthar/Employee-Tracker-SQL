@@ -48,6 +48,7 @@ function trackerPrompt () {
             switch (data.choice){
                 case 'View All Employee':
                     viewAllEmployee();
+                break;
                 case 'Add Employee':
                     addEmployee();
                 break;
