@@ -39,7 +39,7 @@ function trackerPrompt () {
                     'Quit'
         ]
     }];
-    console.log("hererrererererere");
+    console.log("trackerPrompt is functional");
     inquirer.prompt(choicesList)
         .then(function(data){
             
