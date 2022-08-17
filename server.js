@@ -84,9 +84,10 @@ function viewAllEmployee() {
     employees.last_name AS Last_Name, 
     roles.title AS Title, 
     departments.department_name AS Department, 
-    CONCAT(employees.first_name, employees.last_name) AS Manager FROM employees 
+    CONCAT(manager.first_name, " ", manager.last_name) AS Manager FROM employees 
     LEFT JOIN roles ON (roles.role_id = employees.role_id) 
-    INNER JOIN departments ON (departments.department_id = roles.department_id) 
+    INNER JOIN departments ON (departments.department_id = roles.department_id)
+    LEFT JOIN employees AS manager ON ( manager.employee_id = employees.manager_id) 
     ORDER BY employees.employee_id;`
 
     db.query(query, function(err, res) {
@@ -258,7 +259,7 @@ function viewAllRole() {
     let query = 
     `SELECT roles.role_id, roles.title, departments.department_name AS Department
     FROM roles
-    INNER JOIN Department ON roles.department_id = departments.department_id`
+    INNER JOIN departments ON roles.department_id = departments.department_id`
 
     db.query(query, function(err, res) {
             if (err) throw (err);
