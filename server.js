@@ -108,7 +108,7 @@ function addEmployee() {
         if (err) throw (err);
         // loop through roles array for role title and role id
         let roles = res.map(roles => ({name: roles.title, value: roles.role_id}));
-        let employeesList = res.map(employees => ({name: employees.first_name + '' + employees.last_name, value: employees.employee_id})); 
+        let employeesList = res.map(employees => ({name: employees.first_name + ' ' + employees.last_name, value: employees.employee_id})); 
         
         let employeePrompt = [
         {
@@ -146,7 +146,7 @@ function addEmployee() {
                             {
                                 first_name: res.firstName,
                                 last_name: res.lastName,
-                                role_id: res.roles,
+                                role_id: res.role,
                                 manager_id: res.manager,
                             },
                             (err, res) => {
@@ -348,7 +348,7 @@ function addRole() {
 // console.table to VIEW ALL Department
 function viewAllDepartment() {
     let query = 
-    `SELECT departments.department_id AS ID, departments.department_name AS departments`;
+    `SELECT departments.department_id AS id, departments.department_name AS department FROM departments`;
 
     db.query(query, function(err, res) {
             if (err) throw (err);
