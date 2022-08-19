@@ -240,7 +240,7 @@ function updateEmployeeRole() {
                     params[1] = employee
 
                     let query = 
-                    `UPDATE employees SET role_id = ? WHERE id = ?`;
+                    `UPDATE employees SET role_id = ? WHERE role_id = ?`;
                     db.query(query, params, function(err, res) {
                         if (err) throw (err);
                         console.table(res);
