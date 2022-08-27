@@ -35,9 +35,11 @@ function trackerPrompt () {
                     'Update Employee Role',
                     'View All Roles',
                     'Add Role',
+                    'Remove Role',
                     'View All Departments',
                     'Add Departments',
-                    'Quit'
+                    'Remove Department',
+                    'Quit',
         ]
     }];
     console.log("trackerPrompt is functional");
@@ -65,12 +67,16 @@ function trackerPrompt () {
                 case 'Add Role':
                     addRole();
                 break;
+                case 'Remove Role':
+                    removeRole();
                 case 'View All Departments':
                     viewAllDepartment();
                 break;
                 case 'Add Departments':
                     addDepartment();
                 break;
+                case 'Remove Department':
+                    removeDepartment();
                 case 'Quit':
                     quitPrompt();
                 break;
@@ -158,20 +164,6 @@ function addEmployee() {
                                 console.log("New Employee Added...");
                                 trackerPrompt();
                             })
-                            // db.query(`INSERT INTO SET ?`,
-                            // {
-                            //     department_id: res.departments,
-                            // },
-                            // (err, res) => {
-                            //     if(err) throw (err);
-                            //     // view all employees from table
-                            //     console.table(res);
-                            //     console.log("New Employee Added...");
-                            //     // return to main prompt
-                            //     trackerPrompt();
-                                
-                            // });
-                            
                         });
                 });
         });
@@ -352,6 +344,38 @@ function addRole() {
     });
 };
 
+// option to delete a role from database
+function removeRole () {
+    let queryRoles = 
+    `SELECT * FROM roles`;
+    db.query(queryRoles, function(err, res) {
+        if (err) throw (err);
+        // loop through roles array for role title and role id
+        let rolesMap = res.map(({role_id, title}) => ({name: title, value: role_id}));
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'role',
+                message: 'Please select a role to be removed from database',
+                choices: rolesMap
+            }
+        ])
+        .then(roleRemoved => {
+            let removedRole = roleRemoved.role;
+            let query =
+            `DELETE FROM roles WHERE role_id = ?`;
+            db.query(query, removedRole, (err, res) => {
+                if (err) throw (err);
+                console.table(res);
+                console.log('Role removed from database successfully');
+                // return to main prompt
+                trackerPrompt();
+            })
+        })
+    })
+};
+
+
 // console.table to VIEW ALL Department
 function viewAllDepartment() {
     let query = 
@@ -399,6 +423,37 @@ function addDepartment() {
             // return to main prompt
             trackerPrompt();
         });
+    })
+};
+
+// option to delete a Department from database
+function removeDepartment () {
+    let queryDept = 
+    `SELECT * FROM departments`;
+    db.query(queryDept, function(err, res) {
+        if (err) throw (err);
+        // loop through Department array for department name and department id
+        let departmentsMap = res.map(({department_name, department_id}) => ({name: department_name, value: department_id}));
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'department',
+                message: 'Please select a department to be removed from database',
+                choices: departmentsMap
+            }
+        ])
+        .then(deptRemoved => {
+            let removedDept = deptRemoved.department;
+            let query =
+            `DELETE FROM departments WHERE department_id = ?`;
+            db.query(query, removedDept, (err, res) => {
+                if (err) throw (err);
+                console.table(res);
+                console.log('Department removed from database successfully');
+                // return to main prompt
+                trackerPrompt();
+            })
+        })
     })
 };
 
