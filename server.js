@@ -31,6 +31,7 @@ function trackerPrompt () {
         choices: [
                     'View All Employee',
                     'Add Employee',
+                    'Remove Employee',
                     'Update Employee Role',
                     'View All Roles',
                     'Add Role',
@@ -108,37 +109,39 @@ function addEmployee() {
         if (err) throw (err);
         // loop through roles array for role title and role id
         let roles = res.map(roles => ({name: roles.title, value: roles.role_id}));
-        let employeesList = res.map(employees => ({name: employees.first_name + ' ' + employees.last_name, value: employees.employee_id})); 
         
-        let employeePrompt = [
-        {
-                name: 'firstName',
-                type: 'input',
-                message: 'What is the First Name of new employee?'
-            },
-            {
-                name: 'lastName',
-                type: 'input',
-                message: 'What is the Last Name of new employee?'
-            },
-            {
-                name: 'role',
-                type: 'rawlist',
-                message: 'What is the Role of new employee?',
-                choices: roles
-            },
-            {
-                name: 'manager',
-                type: 'rawlist',
-                message: 'Who is the Manager of new employee?',
-                choices: employeesList
-            },
-        ]
         
         let queryEmp = 
             `SELECT * FROM employees;`
             db.query(queryEmp, (err, res) => {
                     if (err) throw (err);
+
+                    let employeesList = res.map(employees => ({name: employees.first_name + ' ' + employees.last_name, value: employees.employee_id})); 
+        
+                    let employeePrompt = [
+                    {
+                            name: 'firstName',
+                            type: 'input',
+                            message: 'What is the First Name of new employee?'
+                        },
+                        {
+                            name: 'lastName',
+                            type: 'input',
+                            message: 'What is the Last Name of new employee?'
+                        },
+                        {
+                            name: 'role',
+                            type: 'rawlist',
+                            message: 'What is the Role of new employee?',
+                            choices: roles
+                        },
+                        {
+                            name: 'manager',
+                            type: 'rawlist',
+                            message: 'Who is the Manager of new employee?',
+                            choices: employeesList
+                        },
+                    ]
                     // loop through employees array
                         inquirer.prompt(employeePrompt)
                         .then((res) => {
@@ -151,20 +154,24 @@ function addEmployee() {
                             },
                             (err, res) => {
                                 if (err) throw (err);
-                            })
-                            db.query(`INSERT INTO SET ?`,
-                            {
-                                department_id: res.departments,
-                            },
-                            (err, res) => {
-                                if(err) throw (err);
-                                // view all employees from table
-                                console.table(res);
+
                                 console.log("New Employee Added...");
-                                // return to main prompt
                                 trackerPrompt();
+                            })
+                            // db.query(`INSERT INTO SET ?`,
+                            // {
+                            //     department_id: res.departments,
+                            // },
+                            // (err, res) => {
+                            //     if(err) throw (err);
+                            //     // view all employees from table
+                            //     console.table(res);
+                            //     console.log("New Employee Added...");
+                            //     // return to main prompt
+                            //     trackerPrompt();
                                 
-                            });
+                            // });
+                            
                         });
                 });
         });
@@ -176,7 +183,7 @@ function removeEmployee () {
     `SELECT * FROM employees`;
     db.query(queryEmp, function(err, res) {
         if (err) throw (err);
-        let employeeArray = res.map(({ id, first_name, last_name, }) => ({ name: first_name + " " + last_name, value: id}));
+        let employeeArray = res.map(({ employee_id, first_name, last_name, }) => ({ name: first_name + " " + last_name, value: employee_id}));
         inquirer.prompt([
             {
                 type: 'list',
@@ -188,7 +195,7 @@ function removeEmployee () {
         .then(employeeRemoved => {
             let removedEmp = employeeRemoved.name;
             let query =
-            `DELETE FROM employees WHERE id = ?`;
+            `DELETE FROM employees WHERE employee_id = ?`;
             db.query(query, removedEmp, (err, res) => {
                 if (err) throw (err);
                 console.table(res);
@@ -206,7 +213,7 @@ function updateEmployeeRole() {
     `SELECT * FROM employees`;
     db.query(queryEmp, function(err, res)  {
         if (err) throw (err);
-        let employeeArray = res.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
+        let employeeArray = res.map(({ employee_id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: employee_id }));
         inquirer.prompt([
             {
             type: 'list',
@@ -223,7 +230,7 @@ function updateEmployeeRole() {
             `SELECT * FROM roles`;
             db.query(query, function(err, res) {
                 if (err) throw (err);
-                let rolesArray = res.map(({ id, title }) => ({ name: title, value: id }));
+                let rolesArray = res.map(({ role_id, title }) => ({ name: title, value: role_id }));
                 inquirer.prompt([
                     {
                         type: 'list',
@@ -240,7 +247,7 @@ function updateEmployeeRole() {
                     params[1] = employee
 
                     let query = 
-                    `UPDATE employees SET role_id = ? WHERE role_id = ?`;
+                    `UPDATE employees SET role_id = ? WHERE employee_id = ?`;
                     db.query(query, params, function(err, res) {
                         if (err) throw (err);
                         console.table(res);
@@ -296,10 +303,10 @@ function addRole() {
             // Validate ifNAN return false
             validate: addSalary => {
                 if (isNaN(addSalary)) {
-                    return true;
-                } else {
                     console.log('Please enter a Number value');
                     return false;
+                } else {
+                    return true;
                 }
             }
         }
@@ -311,7 +318,7 @@ function addRole() {
         let roleSelect = 
         `SELECT department_name, department_id FROM departments`;
         
-        db.query(roleSelect, function(err, res) {
+        db.query(roleSelect, function(err, data) {
                 if (err) throw (err);
                 let deptData = data.map(({department_name, department_id}) => ({name: department_name, value: department_id}));
                 let deptPrompt = [
@@ -319,7 +326,7 @@ function addRole() {
                         type: 'list',
                         name: 'deptData',
                         message: 'What Department is this new Role added?',
-                        choice: deptData
+                        choices: deptData
                     }
                 ];
 
@@ -336,7 +343,7 @@ function addRole() {
                     db.query(roleSql, params, (err, res) => {
                         if (err) throw (err);
                         console.table(res);
-                        console.log("Employee Role Added..." + res.role);
+                        console.log("Employee Role Added...");
                         // return to main prompt
                         trackerPrompt();
                     })
@@ -384,11 +391,11 @@ function addDepartment() {
         let query = 
         `INSERT INTO departments (department_name)
         VALUES (?)`;
-        db.query(query, res.addDept, function(err, res) {
+        db.query(query, res.addDept, function(err, resAddDept) {
             if (err) throw (err);
             // view all DEPARTMENT from table
-            console.table(res);
-            console.log("New Department Added..." + res.addDept);
+            console.table(resAddDept);
+            console.log("New Department Added...");
             // return to main prompt
             trackerPrompt();
         });
