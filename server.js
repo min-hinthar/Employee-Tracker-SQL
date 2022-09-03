@@ -351,7 +351,7 @@ function removeRole () {
     db.query(queryRoles, function(err, res) {
         if (err) throw (err);
         // loop through roles array for role title and role id
-        let rolesMap = res.map(({role_id, title}) => ({name: title, value: role_id}));
+        let rolesMap = res.map(({ role_id, title}) => ({ name: title, value: role_id }));
         inquirer.prompt([
             {
                 type: 'list',
@@ -433,7 +433,7 @@ function removeDepartment () {
     db.query(queryDept, function(err, res) {
         if (err) throw (err);
         // loop through Department array for department name and department id
-        let departmentsMap = res.map(({department_name, department_id}) => ({name: department_name, value: department_id}));
+        let departmentsMap = res.map(({ department_name, department_id}) => ({ name: department_name, value: department_id }));
         inquirer.prompt([
             {
                 type: 'list',
